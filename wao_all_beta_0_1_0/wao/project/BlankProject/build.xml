@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="wao" basedir="." default="war">
+
+	<property file="${basedir}/build.properties" />
+	<property environment="env"/>
+<!--	<property name="tomcat.home" value="${env.tomcat_home}"/>-->
+	<property name="war.name" value="${env.CONTEXT_NAME}.war"/>
+
+	<tstamp>
+		<format property="TODAY" pattern="yyyy/MM/dd HH:mm:ss" />
+	</tstamp>
+
+	<target name="init">
+		<delete dir="${dest.dir}" />
+	</target>
+
+	<target name="compile" depends="init">
+		<mkdir dir="${classes.dir}" />
+		<javac destdir="${classes.dir}" debug="on" source="${jdk.version}" target="${jdk.version}" encoding="UTF-8" includeantruntime="false">
+			<compilerarg value="-Xlint:unchecked" />
+			<src path="src" />
+			<classpath>
+				<fileset dir="web/WEB-INF/lib" includes="*.jar" />
+				<fileset dir="${tomcat.home}/lib/" includes="*.jar" />
+			</classpath>
+		</javac>
+
+		<copy todir="${classes.dir}" overwrite="true">
+			<fileset dir="./src" includes="**/*.xml" />
+		</copy>
+
+		<manifest file="${dest.dir}/MANIFEST.MF" mode="update">
+			<attribute name="Built-By" value="${user.name}" />
+			<attribute name="Built-Date" value="${TODAY}" />
+		</manifest>
+	</target>
+
+	<target name="webcopy" depends="compile">
+		<copy todir="${web.dir}" overwrite="true">
+			<fileset dir="./web">
+				<exclude name="_*" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="war" depends="webcopy">
+		<copy todir="${classes.dir}" overwrite="true">
+			<fileset dir="./properties" />
+		</copy>
+		<mkdir dir="${dist.dir}" />
+		<war warfile="${dest.dir}/${war.name}" webxml="./web/WEB-INF/web.xml" manifest="${dest.dir}/MANIFEST.MF">
+			<fileset dir="${web.dir}" />
+			<fileset dir="${jar.dir}" />
+		</war>
+		<move file="${dest.dir}/${war.name}" tofile="${dist.dir}/${war.name}"/>
+		<!--<delete dir="${dest.dir}" />-->
+	</target>
+
+</project>
+
