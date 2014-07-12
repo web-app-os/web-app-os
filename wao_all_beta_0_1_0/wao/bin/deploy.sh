@@ -138,7 +138,7 @@ MAPPER_PATH=src/${root_package//./\/}/mapper
 
 cp -aR "${GEN_PATH}in/mapper" "${PRJ_PATH}/${MAPPER_PATH}"
 echo --- copy web to web project directory ---
-cp -aR "${GEN_PATH}in/web" "${PRJ_PATH}/web"
+cp -aR "${GEN_PATH}in/web" "${PRJ_PATH}"
 cp -aR ${GEN_PATH}out/web/* "${PRJ_PATH}/web"
 echo --- copy controller lib to web project directory ---
 cp -aR "${WAO_PATH}lib/webappos-controller_${wao_verion}.jar" "${PRJ_PATH}/web/WEB-INF/lib"
